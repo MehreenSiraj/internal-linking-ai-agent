@@ -148,8 +148,16 @@ def generate_pdf_report(links_df, site_url, output_path="internal_linking_report
             body_style
         ))
     else:
-        # Build table with better formatting (readable on PDF)
-        # Layout: From Page | Anchor Text | Link To (separate rows for clarity)
+        # Custom style for table cells with word wrapping
+        cell_style = ParagraphStyle(
+            'CellStyle',
+            parent=body_style,
+            fontSize=9,
+            leading=12,
+            wordWrap='CJK'  # Enable word wrapping
+        )
+        
+        # Build table with word wrapping enabled
         table_data = []
         
         for idx, (_, row) in enumerate(links_df.iterrows(), 1):
@@ -158,21 +166,22 @@ def generate_pdf_report(links_df, site_url, output_path="internal_linking_report
             anchor = row['anchor'].strip()
             sentence = row['sentence'].strip()
             
-            # Format: Bold label + value for clarity
-            from_cell = f"<b>From:</b> {from_page}"
-            to_cell = f"<b>To:</b> {to_page}"
-            anchor_cell = f"<b>Anchor:</b> {anchor}"
-            context_cell = f"<b>Context:</b> {sentence[:120]}..."
+            # Use Paragraph objects for word wrapping
+            rec_num = Paragraph(f"<b>Recommendation {idx}</b>", cell_style)
+            from_cell = Paragraph(f"<b>From:</b><br/>{from_page}", cell_style)
+            to_cell = Paragraph(f"<b>To:</b><br/>{to_page}", cell_style)
+            anchor_cell = Paragraph(f"<b>Anchor:</b><br/><i>{anchor}</i>", cell_style)
+            context_cell = Paragraph(f"<b>Context:</b><br/>{sentence}", cell_style)
             
             # Add recommendation number
-            table_data.append([f"<b>Recommendation {idx}</b>", ""])
+            table_data.append([rec_num, ""])
             table_data.append([from_cell, ""])
             table_data.append([anchor_cell, ""])
             table_data.append([to_cell, ""])
             table_data.append([context_cell, ""])
-            table_data.append(["", ""])  # Spacer row
+            table_data.append([Paragraph("", cell_style), ""])  # Spacer row
         
-        # Create table with 2 columns (label column, value column)
+        # Create table with word wrapping enabled
         table = Table(table_data, colWidths=[6.5*inch, 0.5*inch])
         table.setStyle(TableStyle([
             # Header styling
