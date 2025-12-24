@@ -1,0 +1,19 @@
+# Core HTTP & scraping
+requests
+beautifulsoup4
+lxml
+
+# Data handling
+pandas
+
+# PDF generation
+reportlab
+
+# Utilities
+tqdm
+python-dateutil
+
+# NLP & semantic analysis
+sentence-transformers
+scikit-learn
+nltk
