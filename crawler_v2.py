@@ -12,7 +12,7 @@ from urllib.parse import urljoin, urlparse
 import requests
 from bs4 import BeautifulSoup
 
-from url_utils import normalize_url
+from url_utils_v2 import normalize_url
 from config import config
 
 logger = logging.getLogger(__name__)

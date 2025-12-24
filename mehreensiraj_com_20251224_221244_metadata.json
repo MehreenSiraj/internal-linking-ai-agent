@@ -1,0 +1,21 @@
+{
+  "status": "error",
+  "site": "https://mehreensiraj.com",
+  "timestamp": "2025-12-24T22:12:01.386032",
+  "errors": [],
+  "warnings": [
+    "Low cluster cohesion (0.159). Results may be less topically relevant."
+  ],
+  "metadata": {
+    "total_pages_crawled": 17,
+    "usable_pages": 6,
+    "num_clusters": 2,
+    "silhouette_score": 0.15943224728107452,
+    "num_links_recommended": 2
+  },
+  "outputs": {
+    "csv": "mehreensiraj_com_20251224_221244_links.csv",
+    "pdf": "mehreensiraj_com_20251224_221244_report.pdf",
+    "metadata": "mehreensiraj_com_20251224_221244_metadata.json"
+  }
+}

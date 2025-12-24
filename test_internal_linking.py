@@ -5,13 +5,12 @@ Validates safety, quality, and correctness of generated recommendations.
 
 import unittest
 from urllib.parse import urlparse
-import pandas as pd
 
-from crawler import crawl_pages
-from content_extractor import extract_clean_text
-from semantic_topics import embed_pages, cluster_pages
-from semantic_graph import build_semantic_clusters
-from internal_link_planner import (
+from crawler_v2 import crawl_pages, CrawlerError
+from content_extractor_v2 import extract_content, ContentExtractionError
+from semantic_topics_v2 import SemanticClusterer, ClusteringError
+from semantic_graph_v2 import build_semantic_clusters
+from internal_link_planner_v2 import (
     plan_semantic_links,
     is_utility_page,
     identify_pillar,
