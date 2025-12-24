@@ -148,34 +148,64 @@ def generate_pdf_report(links_df, site_url, output_path="internal_linking_report
             body_style
         ))
     else:
-        # Build table data
-        table_data = [["From Page", "Anchor Text", "Link To", "Context"]]
+        # Build table with better formatting (readable on PDF)
+        # Layout: From Page | Anchor Text | Link To (separate rows for clarity)
+        table_data = []
         
-        for _, row in links_df.iterrows():
-            from_page = row['from'].replace('https://', '').replace('http://', '')[:50]
-            to_page = row['to'].replace('https://', '').replace('http://', '')[:50]
-            anchor = row['anchor'][:40]
-            sentence = row['sentence'][:80] + "..." if len(row['sentence']) > 80 else row['sentence']
+        for idx, (_, row) in enumerate(links_df.iterrows(), 1):
+            from_page = row['from'].replace('https://', '').replace('http://', '').strip()
+            to_page = row['to'].replace('https://', '').replace('http://', '').strip()
+            anchor = row['anchor'].strip()
+            sentence = row['sentence'].strip()
             
-            table_data.append([from_page, anchor, to_page, sentence])
+            # Format: Bold label + value for clarity
+            from_cell = f"<b>From:</b> {from_page}"
+            to_cell = f"<b>To:</b> {to_page}"
+            anchor_cell = f"<b>Anchor:</b> {anchor}"
+            context_cell = f"<b>Context:</b> {sentence[:120]}..."
+            
+            # Add recommendation number
+            table_data.append([f"<b>Recommendation {idx}</b>", ""])
+            table_data.append([from_cell, ""])
+            table_data.append([anchor_cell, ""])
+            table_data.append([to_cell, ""])
+            table_data.append([context_cell, ""])
+            table_data.append(["", ""])  # Spacer row
         
-        # Create table with styling
-        table = Table(table_data, colWidths=[1.5*inch, 1.2*inch, 1.5*inch, 1.3*inch])
+        # Create table with 2 columns (label column, value column)
+        table = Table(table_data, colWidths=[6.5*inch, 0.5*inch])
         table.setStyle(TableStyle([
+            # Header styling
             ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#003366')),
             ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
             ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-            ('FONTSIZE', (0, 0), (-1, 0), 10),
-            ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-            ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
-            ('GRID', (0, 0), (-1, -1), 1, colors.black),
-            ('FONTSIZE', (0, 1), (-1, -1), 8),
-            ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#f0f0f0')]),
+            ('FONTSIZE', (0, 0), (-1, 0), 11),
+            ('BOTTOMPADDING', (0, 0), (-1, 0), 8),
+            
+            # Content styling
+            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
             ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+            ('FONTSIZE', (0, 0), (-1, -1), 9),
+            ('LEFTPADDING', (0, 0), (-1, -1), 10),
+            ('RIGHTPADDING', (0, 0), (-1, -1), 10),
+            ('TOPPADDING', (0, 0), (-1, -1), 6),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+            
+            # Gridlines
+            ('LINEBELOW', (0, 0), (-1, -1), 0.5, colors.HexColor('#cccccc')),
+            ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#e0e0e0')),
+            
+            # Alternating row colors for recommendation blocks
+            ('ROWBACKGROUNDS', (0, 0), (-1, -1), [colors.white, colors.HexColor('#f8f8f8')]),
+            
+            # Recommendation number styling (bold header per item)
+            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#f0f4f8')),
+            ('TOPPADDING', (0, 0), (-1, 0), 10),
+            ('BOTTOMPADDING', (0, 0), (-1, 0), 10),
         ]))
         
         story.append(table)
+
     
     story.append(Spacer(1, 0.3 * inch))
     
